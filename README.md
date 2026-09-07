@@ -16,7 +16,7 @@ subnets
 '''
 module "vpc" {
     source = "./module/vpc"
-}
+
     vpc_config = {
         vpc_name = "your_vpc_name"
         cidr_block = "10.0.0.0/16"
