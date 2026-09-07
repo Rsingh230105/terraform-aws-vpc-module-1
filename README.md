@@ -8,7 +8,7 @@ provider "aws" {
 
 module "vpc" {
     source = "./module/vpc"
-
+}
     vpc_config = {
         vpc_name = "my-test-vpc"
         cidr_block = "10.0.0.0/16"
