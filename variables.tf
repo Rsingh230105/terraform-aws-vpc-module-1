@@ -1,30 +1,28 @@
 variable "vpc_config" {
-    description = "To get the CIDR and Name of VPC from user"
-      
-    type = object({
-        cidr_block = string,
-        vpc_name = string
-      })
-    
-    validation {
-      condition = can(cidrnetmask(var.vpc_config.cidr_block))
-      error_message = "Invalide CIDR Format - ${var.vpc_config.cidr_block}"
-    }
+  description = "VPC configuration: cidr_block and name"
+
+  type = object({
+    cidr_block = string
+    name       = string
+  })
+
+  validation {
+    condition     = can(cidrnetmask(var.vpc_config.cidr_block))
+    error_message = "Invalid CIDR format in vpc_config: ${var.vpc_config.cidr_block}"
+  }
 }
 
 variable "subnet_config" {
-    # sub1 = {cidr=.. az =..} sub2={}  sub3 ={}
-    description = "To get the CIDR , AZ, and Name of Subnet from user"
-      
-    type =map(object({
-        cidr_block = string,
-        az = string
-        public = optional(bool, false)
-      }))
+  description = "Map of subnet configurations: cidr_block, az, and optional public flag (default: false)"
 
-      validation {
-      ## sib1 = {cidr=} sub2={}  sub3 ={}, [true, true, false]
-      condition = alltrue([for config in var.subnet_config : can(cidrnetmask(config.cidr_block))])
-      error_message = "Invalide CIDR Format - ${var.vpc_config.cidr_block}"
-    }
+  type = map(object({
+    cidr_block = string
+    az         = string
+    public     = optional(bool, false)
+  }))
+
+  validation {
+    condition     = alltrue([for config in var.subnet_config : can(cidrnetmask(config.cidr_block))])
+    error_message = "One or more subnets have an invalid CIDR format. Please provide valid CIDR blocks."
+  }
 }
